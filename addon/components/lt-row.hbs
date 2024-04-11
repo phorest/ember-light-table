@@ -1,3 +1,11 @@
+{{!--
+
+  XXX @Phorest Changes:
+
+  1. add "rowIndex" here
+
+--}}
+
 {{#each this.columns as |column|}}
   {{component
     (concat 'light-table/cells/' column.cellType)
@@ -7,5 +15,6 @@
     rawValue=(get this.row column.valuePath)
     tableActions=this.tableActions
     extra=this.extra
+    rowIndex=@rowIndex
   }}
 {{/each}}

@@ -1,4 +1,50 @@
-{{#if this.column.cellComponent}}
+{{!--
+
+  XXX @Phorest Changes:
+
+  1. we are passing rowIndex to the cell component
+  2. we have custom "editable" components
+
+--}}
+
+{{! template-lint-disable no-unnecessary-component-helper}}
+{{#if (or (eq this.column.editable.type "TEXT") (eq this.column.editable.type "NUMBER"))}}
+  {{component
+    "ui-table/inline-editing/editable-input"
+    tableActions=this.tableActions
+    extra=this.extra
+    table=this.table
+    column=this.column
+    row=this.row
+    value=this.value
+    rawValue=this.rawValue
+    editableConfig=this.column.editable
+  }}
+{{else if (eq this.column.editable.type "SELECT")}}
+  {{component
+    "ui-table/inline-editing/editable-select"
+    tableActions=this.tableActions
+    extra=this.extra
+    table=this.table
+    column=this.column
+    row=this.row
+    value=this.value
+    rawValue=this.rawValue
+    editableConfig=this.column.editable
+  }}
+{{else if (eq this.column.editable.type "PASSWORD")}}
+  {{component
+    "ui-table/inline-editing/editable-password"
+    tableActions=this.tableActions
+    extra=this.extra
+    table=this.table
+    column=this.column
+    row=this.row
+    value=this.value
+    rawValue=this.rawValue
+    editableConfig=this.column.editable
+  }}
+{{else if this.column.cellComponent}}
   {{component
     (ensure-safe-component this.column.cellComponent)
     tableActions=this.tableActions
@@ -8,7 +54,8 @@
     row=this.row
     value=this.value
     rawValue=this.rawValue
+    rowIndex=this.rowIndex
   }}
 {{else}}
-  {{this.value}}
+  {{~this.value~}}
 {{/if}}

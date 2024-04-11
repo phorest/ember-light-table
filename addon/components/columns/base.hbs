@@ -1,3 +1,13 @@
+{{!--
+
+  XXX @Phorest Changes:
+
+  1. We've changed the order of {{label}} and sortIcons. We prefer to have the label before sortIcons.
+  2. To make it easier to style we wrapped {{label}} with <span> (because the text node cannot be styled),
+  and wrapped that span and sortIcons with a <div>.
+
+--}}
+
 {{#if this.column.component}}
   {{component
     (ensure-safe-component this.column.component)
@@ -8,16 +18,21 @@
     sortIcons=this.sortIcons
   }}
 {{else}}
-  {{#if (and this.sortIcons.iconComponent this.sortIconProperty)}}
-    {{component
-      (ensure-safe-component this.sortIcons.iconComponent)
-      sortIcons=this.sortIcons
-      sortIconProperty=this.sortIconProperty
-    }}
-  {{else if this.sortIconProperty}}
-    <i class='lt-sort-icon {{get this.sortIcons this.sortIconProperty}}'></i>
-  {{/if}}
-  {{this.label}}
+  <div>
+    <span>
+      {{this.label}}
+    </span>
+
+    {{#if (and this.sortIcons.iconComponent this.sortIconProperty)}}
+      {{component
+        (ensure-safe-component this.sortIcons.iconComponent)
+        sortIcons=this.sortIcons
+        sortIconProperty=this.sortIconProperty
+      }}
+    {{else if this.sortIconProperty}}
+      <i class='lt-sort-icon {{get this.sortIcons this.sortIconProperty}}'></i>
+    {{/if}}
+  </div>
 {{/if}}
 
 {{#if this.isResizable}}

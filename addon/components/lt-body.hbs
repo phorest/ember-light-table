@@ -1,3 +1,12 @@
+{{!--
+
+  XXX @Phorest Changes:
+
+  1. we are passing rowIndex when iterating through rows (please notice we use "light-table/lt-row" as lt.row to scope it)
+  2. we allow passing scrollableContent (further explanation below)
+
+--}}
+
 <div
   class="lt-body-wrap
   {{if this.canSelect "can-select"}}
@@ -41,7 +50,7 @@
                 firstVisibleChanged=(action "firstVisibleChanged")
                 lastVisibleChanged=(action "lastVisibleChanged")
                 firstReached=(action "firstReached")
-                lastReached=(action "lastReached") as |row|
+                lastReached=(action "lastReached") as |row rowIndex|
               }}
                 {{lt.row
                   row=row
@@ -53,6 +62,7 @@
                   enableScaffolding=this.enableScaffolding
                   canExpand=this.canExpand
                   canSelect=this.canSelect
+                  rowIndex=rowIndex
                   click=(action "onRowClick" row)
                   doubleClick=(action "onRowDoubleClick" row)
                 }}
@@ -118,7 +128,7 @@
               {{#each
                 (if
                   scrollbar (compute scrollbar.update this.rows) this.rows
-                ) as |row|
+                ) as |row rowIndex|
               }}
                 {{lt.row
                   row=row
@@ -130,6 +140,7 @@
                   enableScaffolding=this.enableScaffolding
                   canExpand=this.canExpand
                   canSelect=this.canSelect
+                  rowIndex=rowIndex
                   click=(action "onRowClick" row)
                   doubleClick=(action "onRowDoubleClick" row)
                 }}
@@ -177,10 +188,26 @@
         </table>
 
         {{#if @onScrolledToBottom}}
+          {{!--
+            The only thing in this layout that has changed is an additional option
+            to pass scrollableContent parameter from the outside.
+
+            That let us using infinite scroll without a need to use fixed header provided by `ember-light-table` that
+            also requires to render the table in a container that has some height set.
+
+            We can then use a different DOM element as a scrollable container than the default one.
+
+            Diff:
+            - scrollableContent=(concat "#" tableId " .lt-scrollable")}}
+            + scrollableContent=(or scrollableContent (concat "#" tableId " .lt-scrollable"))}}
+          --}}
           <lt.infinity
             @enterViewport={{this.enterViewport}}
             @exitViewport={{this.exitViewport}}
-            @scrollableContent={{concat "#" this.tableId " .lt-scrollable"}}
+            @scrollableContent={{or
+              this.scrollableContent
+              (concat "#" this.tableId " .lt-scrollable")
+            }}
           />
         {{/if}}
 
