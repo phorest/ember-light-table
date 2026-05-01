@@ -81,14 +81,26 @@ export default Component.extend({
    * @property value
    * @type {Mixed}
    */
-  value: computed('column.format', 'rawValue', function () {
-    let rawValue = this.rawValue;
-    let format = this.column.format;
+  value: computed('column.format', 'rawValue', {
+    get() {
+      let rawValue = this.rawValue;
+      let format = this.column.format;
 
-    if (format && typeof format === 'function') {
-      return format.call(this, rawValue);
-    }
+      if (format && typeof format === 'function') {
+        return format.call(this, rawValue);
+      }
 
-    return rawValue;
+      return rawValue;
+    },
+    // Ember 4 strict-mode rejects writes to computed properties that don't
+    // declare a setter. The cell template (cells/base.hbs) passes
+    // `value=this.value` into a child component (e.g. an editable input or
+    // a custom cell), and when that child writes back the framework tries
+    // to update this slot. Provide a setter that records the override; the
+    // cached value is invalidated again whenever rawValue or column.format
+    // change.
+    set(_key, newValue) {
+      return newValue;
+    },
   }),
 });
